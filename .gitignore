@@ -1,1 +1,5 @@
 .idea
+web/front/node_modules
+web/front/dist
+web/front/npm-debug.log*
+web/front/pnpm-debug.log*
