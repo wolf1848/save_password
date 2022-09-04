@@ -1,4 +1,5 @@
 .idea
+.env
 web/front/node_modules
 web/front/dist
 web/front/npm-debug.log*
