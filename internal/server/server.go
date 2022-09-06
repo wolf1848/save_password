@@ -3,19 +3,24 @@ package server
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
-	"startGo/internal/route"
+	"startGo/internal/repository"
 )
 
 type Server struct {
-	server *echo.Echo
+	Server *echo.Echo
+	db     *repository.PSQL
+}
+
+func InitServer(db *repository.PSQL) *Server {
+	return &Server{
+		Server: echo.New(),
+		db:     db,
+	}
 }
 
 func (s *Server) Run(port string) error {
-	e := echo.New()
 
-	e.GET("/users/:id", route.GetUser)
-
-	if err := e.Start(port); err != http.ErrServerClosed {
+	if err := s.Server.Start(port); err != http.ErrServerClosed {
 		return err
 	}
 

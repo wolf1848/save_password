@@ -12,7 +12,7 @@ package main
 //
 //	pool, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 //	if err != nil {
-//		log.Fatalf("Unable to connect to database: %v\n", err)
+//		log.Fatalf("Unable to connect to repository: %v\n", err)
 //	}
 //
 //	db = &PSQL{

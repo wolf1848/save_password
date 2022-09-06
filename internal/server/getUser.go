@@ -1,4 +1,4 @@
-package route
+package server
 
 import (
 	"context"
@@ -8,10 +8,10 @@ import (
 	"os"
 )
 
-func GetUser(c echo.Context) error {
+func (s *Server) GetUser(c echo.Context) error {
 
 	var greeting string
-	err := db.pool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
+	err := s.db.Pool.QueryRow(context.Background(), "select 'Hello, world!'").Scan(&greeting)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "QueryRow failed: %v\n", err)
 		os.Exit(1)
@@ -19,6 +19,6 @@ func GetUser(c echo.Context) error {
 
 	fmt.Println(greeting)
 	// User ID from path `users/:id`
-	id := c.Param("id")
-	return c.String(http.StatusOK, id)
+	//id := c.Param("id")
+	return c.String(http.StatusOK, greeting)
 }
