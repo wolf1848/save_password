@@ -2,10 +2,7 @@ package application
 
 import "startGo/internal/server"
 
-type App struct {
-	server *server.Server
-}
-
-func (a *App) Run() {
-
+func Run() {
+	s := new(server.Server)
+	s.Run(":8891")
 }
