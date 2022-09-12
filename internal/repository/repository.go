@@ -6,11 +6,15 @@ import (
 	"os"
 )
 
-type PSQL struct {
-	Pool *pgxpool.Pool
+type UserPg interface {
+	create() (int, error)
 }
 
-func PoolCreate() (*PSQL, error) {
+type Repository struct {
+	UserPg
+}
+
+func CreateRepository() (*Repository, error) {
 
 	pool, poolErr := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if poolErr != nil {
@@ -22,8 +26,8 @@ func PoolCreate() (*PSQL, error) {
 		return nil, pingErr
 	}
 
-	db := &PSQL{
-		Pool: pool,
+	db := &Repository{
+		UserPg: createUserPg(pool),
 	}
 
 	return db, nil

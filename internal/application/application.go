@@ -2,9 +2,12 @@ package application
 
 import (
 	"github.com/joho/godotenv"
+	"github.com/labstack/echo/v4"
+	"net/http"
 	"os"
+	"startGo/internal/handler"
 	"startGo/internal/repository"
-	"startGo/internal/server"
+	"startGo/internal/service"
 )
 
 func initConfig() error {
@@ -14,6 +17,9 @@ func initConfig() error {
 	}
 	return nil
 }
+func test(c echo.Context) error {
+	return c.String(http.StatusOK, "Hello, World!")
+}
 
 func Run() error {
 
@@ -22,16 +28,16 @@ func Run() error {
 		return confErr
 	}
 
-	db, dbErr := repository.PoolCreate()
+	repository, dbErr := repository.CreateRepository()
 	if dbErr != nil {
 		return dbErr
 	}
 
-	s := server.InitServer(db)
+	service := service.CreateService(repository)
 
-	s.Server.GET("/testSql", s.GetUser)
+	handler := handler.CreateHandler(service)
 
-	serverErr := s.Run(os.Getenv("SERVER_PORT"))
+	serverErr := handler.Run(os.Getenv("SERVER_PORT"))
 	if serverErr != nil {
 		return serverErr
 	}
