@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"os"
 	"startGo/internal/service"
+	"strconv"
 )
 
 type Handler struct {
@@ -12,7 +14,10 @@ type Handler struct {
 }
 
 func (h *Handler) initRoute() {
-	h.server.GET("/", h.CreateUser)
+	if debug, err := strconv.ParseBool(os.Getenv("SERVER_DEBUG")); err == nil {
+		h.server.Debug = debug
+	}
+	h.UserGroupRoute()
 }
 
 func CreateHandler(s *service.Service) *Handler {

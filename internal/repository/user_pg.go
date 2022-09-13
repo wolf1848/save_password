@@ -13,5 +13,10 @@ func createUserPg(pool *pgxpool.Pool) *userPg {
 }
 
 func (user *userPg) create() (int, error) {
+
+	//row := userPg.pool.QueryRow(context.Background(),
+	//	"INSERT INTO phonebook (name, phone) VALUES ($1, $2) RETURNING id",
+	//	rec.Name, rec.Phone)
+
 	return 1, nil
 }

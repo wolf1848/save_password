@@ -2,8 +2,6 @@ package application
 
 import (
 	"github.com/joho/godotenv"
-	"github.com/labstack/echo/v4"
-	"net/http"
 	"os"
 	"startGo/internal/handler"
 	"startGo/internal/repository"
@@ -16,9 +14,6 @@ func initConfig() error {
 		return err
 	}
 	return nil
-}
-func test(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
 }
 
 func Run() error {
