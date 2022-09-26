@@ -1,11 +1,12 @@
 package application
 
 import (
-	"github.com/joho/godotenv"
 	"os"
 	"startGo/internal/handler"
 	"startGo/internal/repository"
 	"startGo/internal/service"
+
+	"github.com/joho/godotenv"
 )
 
 func initConfig() error {
@@ -32,7 +33,7 @@ func Run() error {
 
 	handler := handler.CreateHandler(service)
 
-	serverErr := handler.Run(os.Getenv("SERVER_PORT"))
+	serverErr := handler.Run(":" + os.Getenv("SERVER_PORT"))
 	if serverErr != nil {
 		return serverErr
 	}
