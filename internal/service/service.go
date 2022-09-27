@@ -10,6 +10,6 @@ type Service struct {
 
 func CreateService(r *repository.Repository) *Service {
 	return &Service{
-		UserService: createUserService(&r.UserPg),
+		UserService: createUserService(r),
 	}
 }

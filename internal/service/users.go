@@ -6,22 +6,26 @@ import (
 )
 
 type UserService interface {
-	Create(data *data.User) (int, error)
+	Create(data *data.User) (*data.User, error)
 }
 
 type userService struct {
-	repository *repository.UserPg
+	repository *repository.Repository
 }
 
-func createUserService(r *repository.UserPg) *userService {
+func createUserService(r *repository.Repository) *userService {
 	return &userService{
 		repository: r,
 	}
 }
 
-func (user *userService) Create(data *data.User) (int, error) {
+func (user *userService) Create(data *data.User) (*data.User, error) {
 
-	(*user).repository.Create()
+	if id, err := user.repository.UserPg.Create(data); err != nil {
+		return nil, err
+	} else {
+		data.Id = id
+		return data, nil
+	}
 
-	return 1, nil
 }

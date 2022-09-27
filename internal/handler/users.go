@@ -1,12 +1,17 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"startGo/internal/data"
 
 	"github.com/labstack/echo/v4"
 )
+
+type Res struct {
+	Message string
+	Error   error
+	Data    []*data.User
+}
 
 func (h *Handler) UserGroupRoute() {
 	g := h.server.Group("/users")
@@ -20,9 +25,16 @@ func (h *Handler) createUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	_, err := h.service.UserService.Create(u)
+	res := &Res{}
 
-	fmt.Println(err)
+	if data, err := h.service.UserService.Create(u); err != nil {
+		res.Message = "Возникла проблема."
+		res.Error = err
+		return c.JSON(http.StatusOK, res)
+	} else {
+		res.Message = "Пользователь успешно добавлен."
+		res.Data = append(res.Data, data)
+		return c.JSON(http.StatusOK, res)
+	}
 
-	return c.String(http.StatusOK, "Hello, Struct!")
 }

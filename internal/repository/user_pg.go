@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"fmt"
 	"startGo/internal/data"
 
@@ -23,11 +24,18 @@ func createUserPg(pool *pgxpool.Pool) *userPg {
 
 func (user *userPg) Create(data *data.User) (int, error) {
 
-	fmt.Println("test sql method")
+	var id int
 
-	//row := userPg.pool.QueryRow(context.Background(),
-	//	"INSERT INTO phonebook (name, phone) VALUES ($1, $2) RETURNING id",
-	//	rec.Name, rec.Phone)
+	row := user.pool.QueryRow(context.Background(),
+		"INSERT INTO users (login, full_name, hash_pwd) VALUES (coalesce(TRIM($1),'') != '', $2, $3) RETURNING id",
+		data.Login, data.FullName, data.Pwd)
 
-	return 1, nil
+	if err := row.Scan(&id); err != nil {
+
+		fmt.Println(err)
+
+		return 0, err
+	}
+
+	return id, nil
 }
