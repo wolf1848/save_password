@@ -3,29 +3,26 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"startGo/internal/data"
 
 	"github.com/labstack/echo/v4"
 )
 
-type User struct {
-	Id   uint32 `json:"id"`
-	test string
-}
-
 func (h *Handler) UserGroupRoute() {
 	g := h.server.Group("/users")
-	g.POST("", h.CreateUser)
+	g.PUT("", h.createUser)
 }
 
-func (h *Handler) CreateUser(c echo.Context) error {
+func (h *Handler) createUser(c echo.Context) error {
 
-	u := new(User)
+	u := new(data.User)
 	if err := c.Bind(u); err != nil {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	fmt.Println(u.Id)
-	fmt.Println(u.test)
+	_, err := h.service.UserService.Create(u)
+
+	fmt.Println(err)
 
 	return c.String(http.StatusOK, "Hello, Struct!")
 }

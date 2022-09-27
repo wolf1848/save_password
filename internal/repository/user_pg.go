@@ -1,9 +1,18 @@
 package repository
 
-import "github.com/jackc/pgx/v4/pgxpool"
+import (
+	"fmt"
+	"startGo/internal/data"
+
+	"github.com/jackc/pgx/v4/pgxpool"
+)
 
 type userPg struct {
 	pool *pgxpool.Pool
+}
+
+type UserPg interface {
+	Create(data *data.User) (int, error)
 }
 
 func createUserPg(pool *pgxpool.Pool) *userPg {
@@ -12,7 +21,9 @@ func createUserPg(pool *pgxpool.Pool) *userPg {
 	}
 }
 
-func (user *userPg) create() (int, error) {
+func (user *userPg) Create(data *data.User) (int, error) {
+
+	fmt.Println("test sql method")
 
 	//row := userPg.pool.QueryRow(context.Background(),
 	//	"INSERT INTO phonebook (name, phone) VALUES ($1, $2) RETURNING id",

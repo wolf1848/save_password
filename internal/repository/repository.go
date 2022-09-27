@@ -2,13 +2,10 @@ package repository
 
 import (
 	"context"
-	"github.com/jackc/pgx/v4/pgxpool"
 	"os"
-)
 
-type UserPg interface {
-	create() (int, error)
-}
+	"github.com/jackc/pgx/v4/pgxpool"
+)
 
 type Repository struct {
 	UserPg

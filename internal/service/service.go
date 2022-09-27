@@ -1,10 +1,8 @@
 package service
 
-import "startGo/internal/repository"
-
-type UserService interface {
-	create() (int, error)
-}
+import (
+	"startGo/internal/repository"
+)
 
 type Service struct {
 	UserService
