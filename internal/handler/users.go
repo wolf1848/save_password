@@ -29,7 +29,6 @@ func (h *Handler) createUser(c echo.Context) error {
 	res := &Res{}
 
 	if data, err := h.service.UserService.Create(u); err != nil {
-		fmt.Println(err)
 		res.Message = "Возникла проблема."
 		res.Error = fmt.Sprintf("Ошибка : %v", err)
 		return c.JSON(http.StatusOK, res)

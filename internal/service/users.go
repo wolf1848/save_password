@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"os"
+	"regexp"
 	"startGo/internal/data"
 	"startGo/internal/repository"
 
@@ -40,7 +41,18 @@ func (user *userService) Create(data *data.User) (*data.User, error) {
 }
 
 func (user *userService) hashGen(pwd *string) error {
-	if len(*pwd) >= 8 {
+
+	secure := true
+	tests := []string{".{8,}", "[a-z]", "[A-Z]", "[0-9]", "[^\\d\\w]"}
+	for _, test := range tests {
+		t, _ := regexp.MatchString(test, *pwd)
+		if !t {
+			secure = false
+			break
+		}
+	}
+
+	if secure {
 		saltedBytes := []byte(os.Getenv("SERVER_SALT"))
 		pwdBytes := []byte(*pwd)
 		bytes := append(pwdBytes[:len(pwdBytes)/2], saltedBytes...)
@@ -54,7 +66,7 @@ func (user *userService) hashGen(pwd *string) error {
 		*pwd = string(hashedBytes[:])
 		return nil
 	} else {
-		return errors.New("длина поля \"Пароль\" меньше 8 символов")
+		return errors.New("поле \"Пароль\" не соответствует требованиям: длина не менее 8 символов, цифры и буквы верхнего и нижнего регистра, спецсимволы")
 	}
 
 }
