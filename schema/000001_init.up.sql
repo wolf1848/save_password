@@ -1,9 +1,8 @@
 CREATE TABLE users(
     id serial primary key,
-    login varchar(30) not null unique,
+    login varchar(30) not null unique check(login != ''),
     full_name varchar(255),
-    hash_pwd varchar(255) not null,
-    check((login ='') is not false and hash_pwd !='')
+    hash_pwd varchar(255) not null check(hash_pwd != '')
 );
 
 CREATE TABLE info (

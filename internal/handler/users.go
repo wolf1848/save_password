@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"net/http"
 	"startGo/internal/data"
 
@@ -9,7 +10,7 @@ import (
 
 type Res struct {
 	Message string
-	Error   error
+	Error   string
 	Data    []*data.User
 }
 
@@ -28,8 +29,9 @@ func (h *Handler) createUser(c echo.Context) error {
 	res := &Res{}
 
 	if data, err := h.service.UserService.Create(u); err != nil {
+		fmt.Println(err)
 		res.Message = "Возникла проблема."
-		res.Error = err
+		res.Error = fmt.Sprintf("Ошибка : %v", err)
 		return c.JSON(http.StatusOK, res)
 	} else {
 		res.Message = "Пользователь успешно добавлен."

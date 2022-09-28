@@ -2,9 +2,10 @@ package repository
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"startGo/internal/data"
 
+	"github.com/jackc/pgconn"
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
@@ -27,14 +28,29 @@ func (user *userPg) Create(data *data.User) (int, error) {
 	var id int
 
 	row := user.pool.QueryRow(context.Background(),
-		"INSERT INTO users (login, full_name, hash_pwd) VALUES (coalesce(TRIM($1),'') != '', $2, $3) RETURNING id",
+		"INSERT INTO users (login, full_name, hash_pwd) VALUES (trim($1), $2, trim($3)) RETURNING id",
 		data.Login, data.FullName, data.Pwd)
 
 	if err := row.Scan(&id); err != nil {
 
-		fmt.Println(err)
+		if pgErr, ok := err.(*pgconn.PgError); ok {
+			var userErr error
 
-		return 0, err
+			switch pgErr.ConstraintName {
+			case "users_login_check":
+				userErr = errors.New("поле \"Логин\" обязательно для заполнения")
+			case "users_hash_pwd_check":
+				userErr = errors.New("поле \"Пароль\" обязательно для заполнения")
+			case "users_login_key":
+				userErr = errors.New("поле \"Логин\" не уникально")
+			default:
+				userErr = errors.New("возникла непредвиденная проблема")
+
+			}
+
+			return 0, userErr
+		}
+
 	}
 
 	return id, nil
