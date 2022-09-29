@@ -40,6 +40,10 @@ func (user *userService) Create(data *data.User) (*data.User, error) {
 
 }
 
+func (user *userService) Login(data *data.User) (*data.User, error) {
+
+}
+
 func (user *userService) hashGen(pwd *string) error {
 
 	secure := true
