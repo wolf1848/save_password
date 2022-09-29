@@ -15,6 +15,10 @@ type Handler struct {
 }
 
 func (h *Handler) initRoute() {
+
+	//Описать  middleware для чека авторизации
+	//h.server.Use()
+
 	if debug, err := strconv.ParseBool(os.Getenv("SERVER_DEBUG")); err == nil {
 		h.server.Debug = debug
 	}

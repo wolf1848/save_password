@@ -15,6 +15,8 @@ type Res struct {
 }
 
 func (h *Handler) UserGroupRoute() {
+	h.server.POST("/login", h.LogIn)
+	h.server.POST("/logout", h.LogOut)
 	g := h.server.Group("/users")
 	g.PUT("", h.createUser)
 }
@@ -38,4 +40,12 @@ func (h *Handler) createUser(c echo.Context) error {
 		return c.JSON(http.StatusOK, res)
 	}
 
+}
+
+func (h *Handler) LogIn(c echo.Context) error {
+	return c.String(http.StatusOK, "")
+}
+
+func (h *Handler) LogOut(c echo.Context) error {
+	return c.String(http.StatusOK, "")
 }
