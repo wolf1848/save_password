@@ -14,7 +14,8 @@ type userPg struct {
 }
 
 type UserPg interface {
-	Create(data *data.User) (int, error)
+	Create(data *data.User) (uint32, error)
+	CheckUser(data *data.User) (uint32, string, string, error)
 }
 
 func createUserPg(pool *pgxpool.Pool) *userPg {
@@ -23,9 +24,9 @@ func createUserPg(pool *pgxpool.Pool) *userPg {
 	}
 }
 
-func (user *userPg) Create(data *data.User) (int, error) {
+func (user *userPg) Create(data *data.User) (uint32, error) {
 
-	var id int
+	var id uint32
 
 	row := user.pool.QueryRow(context.Background(),
 		"INSERT INTO users (login, full_name, hash_pwd) VALUES (trim($1), $2, trim($3)) RETURNING id",
@@ -54,4 +55,20 @@ func (user *userPg) Create(data *data.User) (int, error) {
 	}
 
 	return id, nil
+}
+
+func (user *userPg) CheckUser(data *data.User) (uint32, string, string, error) {
+
+	var uid uint32
+	var hash_pwd string
+	var full_name string
+	row := user.pool.QueryRow(context.Background(),
+		"SELECT id, hash_pwd, full_name FROM users WHERE login=trim($1) LIMIT 1",
+		data.Login)
+
+	if err := row.Scan(&uid, &hash_pwd, &full_name); err != nil {
+		return 0, "", "", err
+	}
+
+	return uid, hash_pwd, full_name, nil
 }

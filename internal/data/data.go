@@ -1,7 +1,7 @@
 package data
 
 type User struct {
-	Id       int    `json:"id"`
+	Id       uint32 `json:"id"`
 	Login    string `json:"login"`
 	FullName string `json:"full_name"`
 	Pwd      string `json:"pwd"`

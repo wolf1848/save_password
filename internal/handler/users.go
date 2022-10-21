@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"startGo/internal/data"
@@ -43,7 +44,24 @@ func (h *Handler) createUser(c echo.Context) error {
 }
 
 func (h *Handler) LogIn(c echo.Context) error {
-	return c.String(http.StatusOK, "")
+
+	u := new(data.User)
+	if err := c.Bind(u); err != nil {
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	res := &Res{}
+
+	if data, err := h.service.UserService.LogIn(u); err != nil {
+		res.Message = "Проблема аворизации."
+		res.Error = fmt.Sprintf("Ошибка : %v", errors.New("\"Логин\" или \"Пароль\" указаны неверно"))
+		return c.JSON(http.StatusOK, res)
+	} else {
+		res.Message = "Успешно."
+		res.Data = append(res.Data, data)
+		return c.JSON(http.StatusOK, res)
+	}
+
 }
 
 func (h *Handler) LogOut(c echo.Context) error {
